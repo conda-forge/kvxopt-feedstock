@@ -15,9 +15,9 @@ glpk:
 gsl:
 - '2.7'
 libblas:
-- 3.8 *netlib
+- 3.9 *netlib
 liblapack:
-- 3.8 *netlib
+- 3.9 *netlib
 macos_machine:
 - x86_64-apple-darwin13.4.0
 pin_run_as_build:
