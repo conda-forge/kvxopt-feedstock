@@ -1,5 +1,5 @@
 c_compiler:
-- vs2017
+- vs2019
 channel_sources:
 - conda-forge
 channel_targets:
@@ -7,7 +7,7 @@ channel_targets:
 fftw:
 - '3'
 glpk:
-- '4.65'
+- '5.0'
 gsl:
 - '2.7'
 libblas:
