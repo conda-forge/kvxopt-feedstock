@@ -1,4 +1,4 @@
-{% set version = "1.3.0.2" %}
+{% set version = "1.3.0.3" %}
 {% set suitesparse_for_win_version = "5.7.2" %}
 
 # This recipe is based on CVXOPT's recipe:
@@ -10,7 +10,7 @@ package:
 
 source:
   - url: https://pypi.io/packages/source/k/kvxopt/kvxopt-{{ version }}.tar.gz
-    sha256: 323580275a2d829e9f387f052757fc22028b53f12d3684ec2983fc12b0d2bff4
+    sha256: 60b0f4423e7371f0bd6fd13ee07d778fbb986fb63ac778b38f6a813202d2c684
 
   # on windows, building suitesparse in directly works much better than trying to build it separately and link it in
   - url: https://github.com/DrTimothyAldenDavis/SuiteSparse/archive/v{{ suitesparse_for_win_version }}.tar.gz  # [win]
@@ -22,7 +22,7 @@ source:
 
 build:
   skip: true  # [py<35]
-  number: 2
+  number: 0
 
 requirements:
   build:
