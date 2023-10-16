@@ -1,7 +1,7 @@
 c_compiler:
 - vs2019
 channel_sources:
-- conda-forge/label/python_rc,conda-forge
+- conda-forge
 channel_targets:
 - conda-forge main
 fftw:
@@ -26,6 +26,3 @@ suitesparse:
 - '5'
 target_platform:
 - win-64
-zip_keys:
-- - python
-  - channel_sources
