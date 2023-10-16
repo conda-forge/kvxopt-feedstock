@@ -3,9 +3,9 @@ MACOSX_DEPLOYMENT_TARGET:
 c_compiler:
 - clang
 c_compiler_version:
-- '15'
+- '16'
 channel_sources:
-- conda-forge/label/python_rc,conda-forge
+- conda-forge
 channel_targets:
 - conda-forge main
 fftw:
@@ -32,6 +32,3 @@ suitesparse:
 - '5'
 target_platform:
 - osx-64
-zip_keys:
-- - python
-  - channel_sources
