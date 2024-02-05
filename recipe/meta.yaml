@@ -39,6 +39,7 @@ requirements:
     - libosqp
     # suitesparse is linked against on windows, and compiled-in on windows, because yeah, windows.
     - suitesparse          # [not win]
+    - setuptools_scm  # For versioning
   run:
     - python
     - gsl
