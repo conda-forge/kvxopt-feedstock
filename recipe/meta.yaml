@@ -20,7 +20,7 @@ source:
 
 build:
   skip: true  # [py<35]
-  number: 2
+  number: 3
 
 requirements:
   build:
