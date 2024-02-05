@@ -31,6 +31,8 @@ set "KVXOPT_OSQP_INC_DIR=%LIBRARY_PREFIX%\include\osqp"
 :: recipe/meta.yaml downloads the suitesparse-sources to this folder; build it
 set "KVXOPT_SUITESPARSE_SRC_DIR=%SRC_DIR%\suitesparse"
 
+set SETUPTOOLS_SCM_PRETEND_VERSION=%PKG_VERSION%
+
 %PYTHON% setup.py install --single-version-externally-managed --record=record.txt
 
 copy src\C\cvxopt.h %LIBRARY_PREFIX%\include
