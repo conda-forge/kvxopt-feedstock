@@ -26,10 +26,10 @@ export KVXOPT_OSQP_LIB_DIR="${PREFIX}/lib"
 export KVXOPT_OSQP_INC_DIR="${PREFIX}/include/osqp"
 
 export KVXOPT_SUITESPARSE_LIB_DIR="${PREFIX}/lib"
-export KVXOPT_SUITESPARSE_INC_DIR="${PREFIX}/include"
+export KVXOPT_SUITESPARSE_INC_DIR="${PREFIX}/include/suitesparse"
 
 export SETUPTOOLS_SCM_PRETEND_VERSION="$PKG_VERSION"
 
 $PYTHON setup.py install --single-version-externally-managed --record=record.txt
 
-cp src/C/cvxopt.h ${PREFIX}/include
+cp src/C/kvxopt.h ${PREFIX}/include
