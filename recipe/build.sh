@@ -32,4 +32,4 @@ export SETUPTOOLS_SCM_PRETEND_VERSION="$PKG_VERSION"
 
 $PYTHON setup.py install --single-version-externally-managed --record=record.txt
 
-cp src/C/cvxopt.h ${PREFIX}/include
+cp src/C/kvxopt.h ${PREFIX}/include
