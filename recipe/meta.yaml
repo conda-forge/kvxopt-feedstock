@@ -20,7 +20,7 @@ source:
 
 build:
   skip: true  # [py<35]
-  number: 0
+  number: 1
 
 requirements:
   build:
@@ -48,9 +48,7 @@ requirements:
     - glpk
     - libosqp
     - suitesparse          # [not win]
-  run_constrained:
-    # CVXOPT and KVXOPT can be on the same environment. But include file cvxopt.h not. This can be changed in the future
-    - cvxopt ==999999999
+
 
 test:
   imports:
