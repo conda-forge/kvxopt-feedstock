@@ -9,7 +9,7 @@ package:
 
 
 source:
-  - url: https://pypi.io/packages/source/k/kvxopt/kvxopt-{{ version }}.tar.gz
+  - url: https://pypi.org/packages/source/k/kvxopt/kvxopt-{{ version }}.tar.gz
     sha256: 312df18c11286a2b0ee582e63474b39f685f494425f70308976a3c46c0e6cb45
 
   # on windows, building suitesparse in directly works much better than trying to build it separately and link it in
@@ -20,7 +20,7 @@ source:
 
 build:
   skip: true  # [py<35]
-  number: 3
+  number: 4
 
 requirements:
   build:
