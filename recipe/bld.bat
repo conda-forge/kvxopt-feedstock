@@ -29,7 +29,7 @@ set "KVXOPT_OSQP_LIB_DIR=%LIBRARY_PREFIX%\lib"
 set "KVXOPT_OSQP_INC_DIR=%LIBRARY_PREFIX%\include\osqp"
 
 :: recipe/meta.yaml downloads the suitesparse-sources to this folder; build it
-set "KVXOPT_SUITESPARSE_SRC_DIR=%SRC_DIR%\suitesparse"
+set "KVXOPT_SUITESPARSE_SRC_DIR=suitesparse"
 
 set SETUPTOOLS_SCM_PRETEND_VERSION=%PKG_VERSION%
 
