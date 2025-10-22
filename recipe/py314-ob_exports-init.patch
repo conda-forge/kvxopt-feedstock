@@ -1,35 +1,28 @@
 diff --git a/src/C/dense.c b/src/C/dense.c
-index 959eaf5..9bf554c 100644
+index 959eaf5..3c6fc6f 100644
 --- a/src/C/dense.c
 +++ b/src/C/dense.c
-@@ -23,6 +23,18 @@
+@@ -23,6 +23,13 @@
  
  #include "Python.h"
  #include "kvxopt.h"
 +
-+/* DEBUG INSTRUMENTATION FOR PYTHON 3.14 CRASH */
-+#if PY_MAJOR_VERSION >= 3 && PY_MINOR_VERSION >= 14
++/* DEBUG INSTRUMENTATION FOR PYTHON 3.14 CRASH - ALWAYS ON */
 +#define DEBUG_PY314 1
 +#include <stdio.h>
 +#define DEBUG_LOG(fmt, ...) fprintf(stderr, "[PY314-DEBUG] %s:%d: " fmt "\n", __func__, __LINE__, ##__VA_ARGS__)
 +#define DEBUG_PTR(name, ptr) fprintf(stderr, "[PY314-PTR] %s:%d: %s = %p\n", __func__, __LINE__, name, (void*)ptr)
-+#else
-+#define DEBUG_LOG(fmt, ...)
-+#define DEBUG_PTR(name, ptr)
-+#endif
 +
  #include "misc.h"
  #include <complexobject.h>
  #include <limits.h>
-@@ -158,7 +170,14 @@ matrix * Matrix_New(int nrows, int ncols, int id)
+@@ -158,7 +165,12 @@ matrix * Matrix_New(int nrows, int ncols, int id)
      return NULL;
    }
  
 -  a->id = id; a->nrows = nrows; a->ncols = ncols;
-+#ifdef DEBUG_PY314
 +  DEBUG_LOG("Creating matrix: nrows=%d ncols=%d id=%d", nrows, ncols, id);
 +  DEBUG_PTR("new matrix", a);
-+#endif
 +
 +  a->id = id; a->nrows = nrows; a->ncols = ncols; a->ob_exports = 0;
 +  a->shape[0] = 0; a->shape[1] = 0;
@@ -37,7 +30,7 @@ index 959eaf5..9bf554c 100644
    if ((a->buffer = calloc(nrows*ncols,E_SIZE[id])))
      return a;
    else if (nrows*ncols == 0) 
-@@ -202,12 +221,17 @@ matrix *Matrix_NewFromPyBuffer(PyObject *obj, int id, int *ndim)
+@@ -202,12 +214,17 @@ matrix *Matrix_NewFromPyBuffer(PyObject *obj, int id, int *ndim)
    int flags = PyBUF_FORMAT | PyBUF_STRIDES;  
  
    Py_buffer *view = (Py_buffer *)malloc(sizeof(Py_buffer));
@@ -55,53 +48,45 @@ index 959eaf5..9bf554c 100644
      free(view);
      PY_ERR_TYPE("imported array must have 1 or 2 dimensions");
    }
-@@ -503,6 +527,14 @@ matrix * dense_concat(PyObject *L, int id_arg)
+@@ -503,6 +520,12 @@ matrix * dense_concat(PyObject *L, int id_arg)
  static void
  matrix_dealloc(matrix* self)
  {
-+#ifdef DEBUG_PY314
 +  DEBUG_LOG("Deallocating matrix");
 +  DEBUG_PTR("self", self);
 +  DEBUG_LOG("ob_exports=%ld, buffer=%p", (long)self->ob_exports, self->buffer);
 +  if (self->ob_exports != 0) {
 +    DEBUG_LOG("WARNING: Deallocating matrix with ob_exports=%ld (should be 0!)", (long)self->ob_exports);
 +  }
-+#endif
    free(self->buffer);
  #if PY_MAJOR_VERSION >= 3
    Py_TYPE(self)->tp_free((PyObject*)self);
-@@ -615,6 +647,11 @@ int * matrix_compare(PyObject *self, PyObject *other) {
+@@ -615,6 +638,9 @@ int * matrix_compare(PyObject *self, PyObject *other) {
  
  static PyObject *
  matrix_str(matrix *self) {
-+#ifdef DEBUG_PY314
 +  DEBUG_LOG("matrix_str called");
 +  DEBUG_PTR("self", self);
 +  DEBUG_LOG("ob_exports=%ld, nrows=%d, ncols=%d", (long)self->ob_exports, self->nrows, self->ncols);
-+#endif
  
    PyObject *kvxopt = PyImport_ImportModule("kvxopt");
    PyObject *str, *ret;
-@@ -1349,6 +1386,11 @@ static PyObject * matrix_get_typecode(matrix *self, void *closure)
+@@ -1349,6 +1375,9 @@ static PyObject * matrix_get_typecode(matrix *self, void *closure)
  static int
  matrix_buffer_getbuf(matrix *self, Py_buffer *view, int flags)
  {
-+#ifdef DEBUG_PY314
 +  DEBUG_LOG("BUFFER EXPORT requested");
 +  DEBUG_PTR("self", self);
 +  DEBUG_LOG("ob_exports BEFORE=%ld", (long)self->ob_exports);
-+#endif
  
    if (flags & PyBUF_FORMAT) {
      if (self->id == INT || self->id == DOUBLE || self->id == COMPLEX)
-@@ -1381,13 +1423,32 @@ matrix_buffer_getbuf(matrix *self, Py_buffer *view, int flags)
+@@ -1381,13 +1410,26 @@ matrix_buffer_getbuf(matrix *self, Py_buffer *view, int flags)
    Py_INCREF(self);
    self->ob_exports++;
  
-+#ifdef DEBUG_PY314
 +  DEBUG_LOG("BUFFER EXPORTED successfully");
 +  DEBUG_LOG("ob_exports AFTER=%ld", (long)self->ob_exports);
-+#endif
 +
    return 0;
  }
@@ -109,21 +94,17 @@ index 959eaf5..9bf554c 100644
  static void
  matrix_buffer_relbuf(matrix *self, Py_buffer *view)
  {
-+#ifdef DEBUG_PY314
 +  DEBUG_LOG("BUFFER RELEASE requested");
 +  DEBUG_PTR("self", self);
 +  DEBUG_LOG("ob_exports BEFORE=%ld", (long)self->ob_exports);
-+#endif
 +
    self->ob_exports--;
 +
-+#ifdef DEBUG_PY314
 +  DEBUG_LOG("BUFFER RELEASED");
 +  DEBUG_LOG("ob_exports AFTER=%ld", (long)self->ob_exports);
 +  if (self->ob_exports < 0) {
 +    DEBUG_LOG("ERROR: ob_exports went negative! (%ld)", (long)self->ob_exports);
 +  }
-+#endif
  }
  
  static PyBufferProcs matrix_as_buffer = {
