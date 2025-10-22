@@ -1,0 +1,13 @@
+diff --git a/src/C/dense.c b/src/C/dense.c
+index 959eaf5..1e5483a 100644
+--- a/src/C/dense.c
++++ b/src/C/dense.c
+@@ -158,7 +158,7 @@ matrix * Matrix_New(int nrows, int ncols, int id)
+     return NULL;
+   }
+ 
+-  a->id = id; a->nrows = nrows; a->ncols = ncols;
++  a->id = id; a->nrows = nrows; a->ncols = ncols; a->ob_exports = 0;
+   if ((a->buffer = calloc(nrows*ncols,E_SIZE[id])))
+     return a;
+   else if (nrows*ncols == 0) 

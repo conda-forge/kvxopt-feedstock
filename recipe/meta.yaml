@@ -11,6 +11,8 @@ package:
 source:
   - url: https://pypi.org/packages/source/k/kvxopt/kvxopt-{{ version }}.tar.gz
     sha256: 19ce25c2326fb4f90b8a9f53553a313975b8420f285c354a2be8f45cca5f9956
+    patches:
+      - py314-ob_exports-init.patch
 
   # on windows, building suitesparse in directly works much better than trying to build it separately and link it in
   - url: https://github.com/DrTimothyAldenDavis/SuiteSparse/archive/v{{ suitesparse_for_win_version }}.tar.gz  # [win]
