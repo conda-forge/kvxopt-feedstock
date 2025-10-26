@@ -10,6 +10,11 @@ index 959eaf5..3c6fc6f 100644
 +/* DEBUG INSTRUMENTATION FOR PYTHON 3.14 CRASH - ALWAYS ON */
 +#define DEBUG_PY314 1
 +#include <stdio.h>
+
+/* E_SIZE definition - add if missing */
+#ifndef E_SIZE
+static const int E_SIZE[4] = {sizeof(int), sizeof(double), sizeof(kv_complex), 0};
+#endif
 +#define DEBUG_LOG(fmt, ...) fprintf(stderr, "[PY314-DEBUG] %s:%d: " fmt "\n", __func__, __LINE__, ##__VA_ARGS__)
 +#define DEBUG_PTR(name, ptr) fprintf(stderr, "[PY314-PTR] %s:%d: %s = %p\n", __func__, __LINE__, name, (void*)ptr)
 +
@@ -25,8 +30,8 @@ index 959eaf5..3c6fc6f 100644
 +  DEBUG_PTR("new matrix", a);
 +
 +  a->id = id; a->nrows = nrows; a->ncols = ncols; a->ob_exports = 0;
-+  a->shape[0] = 0; a->shape[1] = 0;
-+  a->strides[0] = 0; a->strides[1] = 0;
++  a->shape[0] = nrows; a->shape[1] = ncols;
++  a->strides[0] = ncols * E_SIZE[a->id]; a->strides[1] = E_SIZE[a->id];
    if ((a->buffer = calloc(nrows*ncols,E_SIZE[id])))
      return a;
    else if (nrows*ncols == 0) 
