@@ -1,0 +1,67 @@
+diff --git a/src/C/dense.c b/src/C/dense.c
+index 959eaf5..a1b2c3d 100644
+--- a/src/C/dense.c
++++ b/src/C/dense.c
+@@ -158,7 +158,11 @@ matrix * Matrix_New(int nrows, int ncols, int id)
+     return NULL;
+   }
+ 
+-  a->id = id; a->nrows = nrows; a->ncols = ncols;
++  a->id = id; a->nrows = nrows; a->ncols = ncols;
++  /* Python 3.14 buffer protocol support */
++  a->ob_exports = 0;
++  a->shape[0] = nrows;
++  a->shape[1] = ncols;
++  a->strides[0] = ncols * E_SIZE[a->id];
++  a->strides[1] = E_SIZE[a->id];
+   if ((a->buffer = calloc(nrows*ncols,E_SIZE[id])))
+     return a;
+   else if (nrows*ncols == 0) 
+     return a;
+   else {
+ #if PY_MAJOR_VERSION >= 3
+     Py_TYPE(a)->tp_free((PyObject*)a);
+ #else
+     a->ob_type->tp_free((PyObject*)a);
+ #endif
+     return (matrix *)PyErr_NoMemory();
+   }
+ }
+ 
+@@ -1381,6 +1387,10 @@ static int
+ matrix_buffer_getbuf(matrix *self, Py_buffer *view, int flags)
+ {
+   if (flags & PyBUF_FORMAT) {
+     if (self->id == INT || self->id == DOUBLE || self->id == COMPLEX)
+       view->format = FMT_STR[self->id];
+     else
+       PY_ERR_INT(PyExc_TypeError, "unknown type");
+   }
+   else
+     view->format = NULL;
+ 
+   if (flags & PyBUF_STRIDES) {
+     view->len = MAT_LGT(self)*E_SIZE[self->id];
+     view->itemsize = E_SIZE[self->id];
+     self->strides[0] = view->itemsize;
+@@ -1390,7 +1400,7 @@ matrix_buffer_getbuf(matrix *self, Py_buffer *view, int flags)
+   }
+   else PY_ERR_INT(PyExc_TypeError, "stride-less requests not supported");
+ 
+   view->buf = self->buffer;
+   view->readonly = 0;
+   view->suboffsets = NULL;
+@@ -1398,7 +1408,8 @@ matrix_buffer_getbuf(matrix *self, Py_buffer *view, int flags)
+   self->shape[0] = self->nrows; self->shape[1] = self->ncols;
+   view->shape = self->shape;
+ 
+   view->obj = (PyObject*)self;
+   view->internal = NULL;
+ 
+   Py_INCREF(self);
+   self->ob_exports++;
+ 
+   return 0;
+ }
+ 
+ static void
