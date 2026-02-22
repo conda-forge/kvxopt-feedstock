@@ -47,7 +47,7 @@ requirements:
     - fftw
     - dsdp
     - glpk
-    - libosqp >=0.6.3,<0.7.0
+    - libosqp >=1.0.4
     - suitesparse          # [not win]
 
 
